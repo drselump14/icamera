@@ -17,7 +17,12 @@ class Request
     res = Net::HTTP.new(@uri.hostname, @uri.port).start do |http|
       http.request(@req)
     end
-    @res = JSON.parse(res.body).deep_symbolize_keys
+    case res.content_type
+    when 'application/json'
+      @res = JSON.parse(res.body).deep_symbolize_keys
+    else
+      res.body
+    end
   end
 
 end
